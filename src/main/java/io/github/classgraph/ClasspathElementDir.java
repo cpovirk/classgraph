@@ -227,9 +227,22 @@ class ClasspathElementDir extends ClasspathElement {
                 return posixFilePermissions;
             }
 
+            protected void checkCanOpen() {
+                if (skipClasspathElement) {
+                    // Shouldn't happen
+                    throw new IllegalStateException("Classpath element could not be opened");
+                }
+                if (isOpen.getAndSet(true)) {
+                    throw new IllegalStateException(
+                            "Resource is already open -- cannot open it again without first calling close()");
+                }
+                if (scanResult.isClosed()) {
+                    throw new IllegalStateException("Cannot open a resource after the ScanResult is closed");
+                }
+            }
+
             @Override
             public ByteBuffer read() throws IOException {
-                checkSkipState();
                 openAndCreateSlice();
                 byteBuffer = pathSlice.read();
                 return byteBuffer;
@@ -237,7 +250,6 @@ class ClasspathElementDir extends ClasspathElement {
 
             @Override
             ClassfileReader openClassfile() throws IOException {
-                checkSkipState();
                 // Classfile won't be compressed, so wrap it in a new PathSlice and then open it
                 openAndCreateSlice();
                 return new ClassfileReader(pathSlice, this);
@@ -245,7 +257,6 @@ class ClasspathElementDir extends ClasspathElement {
 
             @Override
             public InputStream open() throws IOException {
-                checkSkipState();
                 openAndCreateSlice();
                 inputStream = pathSlice.open(this);
                 return inputStream;
@@ -253,7 +264,6 @@ class ClasspathElementDir extends ClasspathElement {
 
             @Override
             public byte[] load() throws IOException {
-                checkSkipState();
                 try {
                     openAndCreateSlice();
                     return pathSlice.load();
@@ -280,18 +290,8 @@ class ClasspathElementDir extends ClasspathElement {
                 }
             }
 
-            private void checkSkipState() throws IOException {
-                if (skipClasspathElement) {
-                    // Shouldn't happen
-                    throw new IOException("Parent directory could not be opened");
-                }
-            }
-
             private void openAndCreateSlice() throws IOException {
-                if (isOpen.getAndSet(true)) {
-                    throw new IOException(
-                            "Resource is already open -- cannot open it again without first calling close()");
-                }
+                checkCanOpen();
                 pathSlice = new PathSlice(resourcePath, false, 0L, nestedJarHandler, false);
                 length = pathSlice.sliceLength;
             }

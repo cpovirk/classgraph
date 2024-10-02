@@ -154,16 +154,23 @@ class ClasspathElementModule extends ClasspathElement {
                 return null; // N/A
             }
 
-            @Override
-            public ByteBuffer read() throws IOException {
+            protected void checkCanOpen() {
                 if (skipClasspathElement) {
                     // Shouldn't happen
-                    throw new IOException("Module could not be opened");
+                    throw new IllegalStateException("Classpath element could not be opened");
                 }
                 if (isOpen.getAndSet(true)) {
-                    throw new IOException(
+                    throw new IllegalStateException(
                             "Resource is already open -- cannot open it again without first calling close()");
                 }
+                if (scanResult.isClosed()) {
+                    throw new IllegalStateException("Cannot open a resource after the ScanResult is closed");
+                }
+            }
+
+            @Override
+            public ByteBuffer read() throws IOException {
+                checkCanOpen();
                 try {
                     moduleReaderProxy = moduleReaderProxyRecycler.acquire();
                     // ModuleReader#read(String name) internally calls:
@@ -199,14 +206,7 @@ class ClasspathElementModule extends ClasspathElement {
 
             @Override
             public InputStream open() throws IOException {
-                if (skipClasspathElement) {
-                    // Shouldn't happen
-                    throw new IOException("Module could not be opened");
-                }
-                if (isOpen.getAndSet(true)) {
-                    throw new IOException(
-                            "Resource is already open -- cannot open it again without first calling close()");
-                }
+                checkCanOpen();
                 try {
                     final Resource thisResource = this;
                     moduleReaderProxy = moduleReaderProxyRecycler.acquire();

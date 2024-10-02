@@ -371,6 +371,20 @@ class ClasspathElementZip extends ClasspathElement {
                 return perms;
             }
 
+            protected void checkCanOpen() {
+                if (skipClasspathElement) {
+                    // Shouldn't happen
+                    throw new IllegalStateException("Classpath element could not be opened");
+                }
+                if (isOpen.getAndSet(true)) {
+                    throw new IllegalStateException(
+                            "Resource is already open -- cannot open it again without first calling close()");
+                }
+                if (scanResult.isClosed()) {
+                    throw new IllegalStateException("Cannot open a resource after the ScanResult is closed");
+                }
+            }
+
             @Override
             ClassfileReader openClassfile() throws IOException {
                 return new ClassfileReader(open(), this);
@@ -378,14 +392,7 @@ class ClasspathElementZip extends ClasspathElement {
 
             @Override
             public InputStream open() throws IOException {
-                if (skipClasspathElement) {
-                    // Shouldn't happen
-                    throw new IOException("Jarfile could not be opened");
-                }
-                if (isOpen.getAndSet(true)) {
-                    throw new IOException(
-                            "Resource is already open -- cannot open it again without first calling close()");
-                }
+                checkCanOpen();
                 try {
                     inputStream = zipEntry.getSlice().open(this);
                     length = zipEntry.uncompressedSize;
@@ -399,14 +406,7 @@ class ClasspathElementZip extends ClasspathElement {
 
             @Override
             public ByteBuffer read() throws IOException {
-                if (skipClasspathElement) {
-                    // Shouldn't happen
-                    throw new IOException("Jarfile could not be opened");
-                }
-                if (isOpen.getAndSet(true)) {
-                    throw new IOException(
-                            "Resource is already open -- cannot open it again without first calling close()");
-                }
+                checkCanOpen();
                 try {
                     byteBuffer = zipEntry.getSlice().read();
                     length = byteBuffer.remaining();
@@ -419,14 +419,7 @@ class ClasspathElementZip extends ClasspathElement {
 
             @Override
             public byte[] load() throws IOException {
-                if (skipClasspathElement) {
-                    // Shouldn't happen
-                    throw new IOException("Jarfile could not be opened");
-                }
-                if (isOpen.getAndSet(true)) {
-                    throw new IOException(
-                            "Resource is already open -- cannot open it again without first calling close()");
-                }
+                checkCanOpen();
                 try (Resource res = this) { // Close this after use
                     final byte[] byteArray = zipEntry.getSlice().load();
                     res.length = byteArray.length;

@@ -1712,6 +1712,11 @@ public final class ScanResult implements Closeable {
         }
     }
 
+    /** Returns whether this ScanResult has been closed yet or not. */
+    public boolean isClosed() {
+        return closed.get();
+    }
+
     /**
      * Close all {@link ScanResult} instances that have not yet been closed. Note that this will close all open
      * {@link ScanResult} instances for any class that uses the classloader that the {@link ScanResult} class is

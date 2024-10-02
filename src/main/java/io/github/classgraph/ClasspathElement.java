@@ -117,6 +117,9 @@ abstract class ClasspathElement implements Comparable<ClasspathElement> {
     /** The scan spec. */
     final ScanSpec scanSpec;
 
+    /** The ScanResult that the classpath element came from. */
+    protected ScanResult scanResult;
+
     // -------------------------------------------------------------------------------------------------------------
 
     /**
@@ -132,6 +135,13 @@ abstract class ClasspathElement implements Comparable<ClasspathElement> {
         this.classpathElementIdxWithinParent = workUnit.classpathElementIdxWithinParent;
         this.classLoader = workUnit.classLoader;
         this.scanSpec = scanSpec;
+    }
+
+    // -------------------------------------------------------------------------------------------------------------
+
+    /** Used to set the ScanResult after the scan is complete. */
+    void setScanResult(final ScanResult scanResult) {
+        this.scanResult = scanResult;
     }
 
     // -------------------------------------------------------------------------------------------------------------
