@@ -380,7 +380,7 @@ class ClasspathElementZip extends ClasspathElement {
                     throw new IllegalStateException(
                             "Resource is already open -- cannot open it again without first calling close()");
                 }
-                if (scanResult.isClosed()) {
+                if (scanResult != null && scanResult.isClosed()) {
                     throw new IllegalStateException("Cannot open a resource after the ScanResult is closed");
                 }
             }

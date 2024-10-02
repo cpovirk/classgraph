@@ -1019,9 +1019,17 @@ class Scanner implements Callable<ScanResult> {
         }
 
         // Return a new ScanResult
-        return new ScanResult(scanSpec, finalClasspathEltOrder, finalClasspathEltOrderStrs, classpathFinder,
-                classNameToClassInfo, packageNameToPackageInfo, moduleNameToModuleInfo, fileToLastModified,
-                nestedJarHandler, topLevelLog);
+        final ScanResult scanResult = new ScanResult(scanSpec, finalClasspathEltOrder, finalClasspathEltOrderStrs,
+                classpathFinder, classNameToClassInfo, packageNameToPackageInfo, moduleNameToModuleInfo,
+                fileToLastModified, nestedJarHandler, topLevelLog);
+
+        // Set the ScanResult in each classpath element, so that the classpath elements can determine when the
+        // ScanResult is closed
+        for (final ClasspathElement classpathElement : finalClasspathEltOrder) {
+            classpathElement.setScanResult(scanResult);
+        }
+
+        return scanResult;
     }
 
     // -------------------------------------------------------------------------------------------------------------
