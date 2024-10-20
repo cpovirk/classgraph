@@ -13,9 +13,9 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.MethodParameterInfo;
 import io.github.classgraph.ScanResult;
-import io.github.classgraph.issues.issue696.Issue696.BrokenAnnotation.Dynamic;
+import io.github.classgraph.issues.issue696.Issue696Test.BrokenAnnotation.Dynamic;
 
-public class Issue696 {
+public class Issue696Test {
     @Target(ElementType.PARAMETER)
     @Retention(RetentionPolicy.RUNTIME)
     public static @interface Foo {
@@ -35,7 +35,7 @@ public class Issue696 {
 
     @Test
     void genericSuperclass() {
-        final ScanResult scanResult = new ClassGraph().acceptPackages(Issue696.class.getPackage().getName())
+        final ScanResult scanResult = new ClassGraph().acceptPackages(Issue696Test.class.getPackage().getName())
                 .enableMethodInfo().enableAnnotationInfo().scan();
         final ClassInfo dynamic = scanResult.getClassInfo(Dynamic.class.getName());
         final MethodParameterInfo[] paramInfo = dynamic.getConstructorInfo().get(0).getParameterInfo();

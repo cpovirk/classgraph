@@ -15,7 +15,7 @@ import io.github.classgraph.issues.issue107.Issue107Test;
 /**
  * Unit test.
  */
-public class Issue352 {
+public class Issue352Test {
 
     /**
      * Test *.
@@ -46,7 +46,7 @@ public class Issue352 {
                 .enableClassInfo().scan()) {
             assertThat(scanResult.getAllResources().getPaths()).contains(pkgInfoPath);
         }
-        try (ScanResult scanResult = new ClassGraph().acceptPackages(Issue352.class.getPackage().getName())
+        try (ScanResult scanResult = new ClassGraph().acceptPackages(Issue352Test.class.getPackage().getName())
                 .enableClassInfo().scan()) {
             assertThat(scanResult.getAllResources().getPaths()).doesNotContain(pkgInfoPath);
         }

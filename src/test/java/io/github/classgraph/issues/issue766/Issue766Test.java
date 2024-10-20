@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 
-public class ClassgraphIssue766 {
+public class Issue766Test {
 
     @Test
     public void testURLs() {
-        final URL url = ClassgraphIssue766.class.getResource("/issue766/ProjectWithAnnotations.iar");
+        final URL url = Issue766Test.class.getResource("/issue766/ProjectWithAnnotations.iar");
 
         final String fileUrl = "file:" + url.getPath();
         final String jarFileUrl = "jar:file:" + url.getPath();

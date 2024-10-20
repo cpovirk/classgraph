@@ -14,7 +14,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Issue289.
  */
-public class Issue289 {
+public class Issue289Test {
 
     /**
      * Issue 289.
@@ -23,10 +23,10 @@ public class Issue289 {
      *             the exception
      */
     @Test
-    public void issue289() throws Exception {
+    public void issue289() {
         try (ScanResult scanResult = new ClassGraph()
                 .overrideClassLoaders(
-                        new URLClassLoader(new URL[] { Issue289.class.getClassLoader().getResource("zip64.zip") }))
+                        new URLClassLoader(new URL[] { Issue289Test.class.getClassLoader().getResource("zip64.zip") }))
                 .scan()) {
             for (int i = 0; i < 90000; i++) {
                 final ResourceList resources = scanResult.getResourcesWithPath(i + "");

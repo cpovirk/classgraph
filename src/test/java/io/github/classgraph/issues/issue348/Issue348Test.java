@@ -16,7 +16,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Issue345.
  */
-public class Issue348 {
+public class Issue348Test {
     /** Test for wildcarded jars. */
     @Test
     public void testWildcard() {

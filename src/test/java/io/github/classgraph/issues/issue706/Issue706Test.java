@@ -10,7 +10,7 @@ import io.github.classgraph.ScanResult;
 import io.github.classgraph.TypeArgument;
 import io.github.classgraph.TypeVariableSignature;
 
-public class Issue706 {
+public class Issue706Test {
     static public class GenericBase<T> {
     }
 
@@ -19,7 +19,7 @@ public class Issue706 {
 
     @Test
     void genericSuperclass() {
-        final ScanResult scanResult = new ClassGraph().acceptPackages(Issue706.class.getPackage().getName())
+        final ScanResult scanResult = new ClassGraph().acceptPackages(Issue706Test.class.getPackage().getName())
                 .enableClassInfo().scan();
         final ClassInfo bypassCls = scanResult.getClassInfo(GenericBypass.class.getName());
         final TypeArgument superclassArg = bypassCls.getTypeSignature().getSuperclassSignature()

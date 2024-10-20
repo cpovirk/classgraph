@@ -16,7 +16,7 @@ import nonapi.io.github.classgraph.utils.VersionFinder.OperatingSystem;
 /**
  * Unit test.
  */
-public class Issue340 {
+public class Issue340Test {
     /** Test. */
     @Test
     public void test() {

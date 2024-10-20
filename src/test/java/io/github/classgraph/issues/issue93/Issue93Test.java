@@ -13,9 +13,9 @@ import io.github.classgraph.ScanResult;
 /**
  * Issue93.
  */
-public class Issue93 {
+public class Issue93Test {
     /** The Constant PKG. */
-    private static final String PKG = Issue93.class.getPackage().getName();
+    private static final String PKG = Issue93Test.class.getPackage().getName();
 
     /**
      * The Interface RetentionClass.

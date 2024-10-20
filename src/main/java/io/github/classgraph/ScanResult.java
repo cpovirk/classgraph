@@ -1712,7 +1712,10 @@ public final class ScanResult implements Closeable {
         }
     }
 
-    /** Returns whether this ScanResult has been closed yet or not. */
+    /**
+     * Returns whether this ScanResult has been closed yet or not.
+     * @return {@code true} if this ScanResult has been closed
+     */
     public boolean isClosed() {
         return closed.get();
     }

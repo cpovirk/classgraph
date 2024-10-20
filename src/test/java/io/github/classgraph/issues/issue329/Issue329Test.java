@@ -11,7 +11,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Unit test.
  */
-public class Issue329 {
+public class Issue329Test {
     /** The Class Foo. */
     public class Foo {
         /** Constructor. */
@@ -30,7 +30,7 @@ public class Issue329 {
         try (ScanResult scanResult = new ClassGraph().enableAllInfo().enableInterClassDependencies()
                 .enableExternalClasses().acceptClasses(Foo.class.getName()).scan()) {
             final ClassInfo classInfo = scanResult.getClassInfo(Foo.class.getName());
-            assertThat(classInfo.getClassDependencies().getNames()).containsOnly(Issue329.class.getName(),
+            assertThat(classInfo.getClassDependencies().getNames()).containsOnly(Issue329Test.class.getName(),
                     Bar.class.getName());
         }
     }
