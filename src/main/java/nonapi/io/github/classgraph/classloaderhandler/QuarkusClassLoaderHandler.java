@@ -115,19 +115,10 @@ class QuarkusClassLoaderHandler implements ClassLoaderHandler {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private static void findClasspathOrderForQuarkusClassloader(final ClassLoader classLoader,
             final ClasspathOrder classpathOrder, final ScanSpec scanSpec, final LogNode log) {
 
-        Collection<Object> elements = (Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
-            classLoader, "elements");
-        if(elements == null) {
-            elements = new ArrayList<>();
-            for(String fieldName : new String[] {"normalPriorityElements", "lesserPriorityElements"}) {
-                elements.addAll((Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
-                    classLoader, fieldName));
-            }
-        }
+        Collection<Object> elements = findQuarkusClassLoaderElements(classLoader, classpathOrder);
         for (final Object element : elements) {
             final String elementClassName = element.getClass().getName();
             if ("io.quarkus.bootstrap.classloading.JarClassPathElement".equals(elementClassName)) {
@@ -143,6 +134,25 @@ class QuarkusClassLoaderHandler implements ClassLoaderHandler {
                 }
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Collection<Object> findQuarkusClassLoaderElements(ClassLoader classLoader, ClasspathOrder classpathOrder) {
+        Collection<Object> elements = (Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
+            classLoader, "elements");
+        if (elements == null) {
+            elements = new ArrayList<>();
+            // Since 3.16.x
+            for (String fieldName : new String[] {"normalPriorityElements", "lesserPriorityElements"}) {
+                Collection<Object> fieldVal = (Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
+                    classLoader, fieldName);
+                if (fieldVal == null) {
+                    continue;
+                }
+                elements.addAll(fieldVal);
+            }
+        }
+        return elements;
     }
 
     @SuppressWarnings("unchecked")
