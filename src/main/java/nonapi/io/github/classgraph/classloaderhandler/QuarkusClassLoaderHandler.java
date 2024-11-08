@@ -31,6 +31,7 @@ package nonapi.io.github.classgraph.classloaderhandler;
 import java.io.IOError;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -117,8 +118,17 @@ class QuarkusClassLoaderHandler implements ClassLoaderHandler {
     @SuppressWarnings("unchecked")
     private static void findClasspathOrderForQuarkusClassloader(final ClassLoader classLoader,
             final ClasspathOrder classpathOrder, final ScanSpec scanSpec, final LogNode log) {
-        for (final Object element : (Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
-                classLoader, "elements")) {
+
+        Collection<Object> elements = (Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
+            classLoader, "elements");
+        if(elements == null) {
+            elements = new ArrayList<>();
+            for(String fieldName : new String[] {"normalPriorityElements", "lesserPriorityElements"}) {
+                elements.addAll((Collection<Object>) classpathOrder.reflectionUtils.getFieldVal(false,
+                    classLoader, fieldName));
+            }
+        }
+        for (final Object element : elements) {
             final String elementClassName = element.getClass().getName();
             if ("io.quarkus.bootstrap.classloading.JarClassPathElement".equals(elementClassName)) {
                 classpathOrder.addClasspathEntry(classpathOrder.reflectionUtils.getFieldVal(false, element, "file"),
