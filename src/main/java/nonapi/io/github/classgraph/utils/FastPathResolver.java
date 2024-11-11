@@ -43,11 +43,8 @@ public final class FastPathResolver {
     /** Match %-encoded characters in URLs. */
     private static final Pattern percentMatcher = Pattern.compile("([%][0-9a-fA-F][0-9a-fA-F])+");
 
-    /** Match custom URLs that are followed by two slashes. */
-    private static final Pattern schemeTwoSlashMatcher = Pattern.compile("^[a-zA-Z+\\-.]+://");
-
-    /** Match custom URLs that are followed by one slash. */
-    private static final Pattern schemeOneSlashMatcher = Pattern.compile("^[a-zA-Z+\\-.]+:/");
+    /** Match custom URLs that are followed by one or two slashes. */
+    private static final Pattern schemeOneOrTwoSlashMatcher = Pattern.compile("^[a-zA-Z+\\-.]+:/{1,2}");
 
     /**
      * Constructor.
@@ -236,24 +233,15 @@ public final class FastPathResolver {
             } else {
                 // Preserve the number of slashes on custom URL schemes (#420)
                 final String relPath = startIdx == 0 ? relativePath : relativePath.substring(startIdx);
-                final Matcher m2 = schemeTwoSlashMatcher.matcher(relPath);
-                if (m2.find()) {
+                final Matcher matcher = schemeOneOrTwoSlashMatcher.matcher(relPath);
+                if (matcher.find()) {
                     matchedPrefix = true;
-                    final String m2Match = m2.group();
-                    startIdx += m2Match.length();
-                    prefix += m2Match;
+                    final String match = matcher.group();
+                    startIdx += match.length();
+                    prefix += match;
                     // Treat the part after the protocol as an absolute path, so the rest of the URL is not treated
                     // as a directory relative to the current directory.
                     isAbsolutePath = true;
-                } else {
-                    final Matcher m1 = schemeOneSlashMatcher.matcher(relPath);
-                    if (m1.find()) {
-                        matchedPrefix = true;
-                        final String m1Match = m1.group();
-                        startIdx += m1Match.length();
-                        prefix += m1Match;
-                        isAbsolutePath = true;
-                    }
                 }
             }
         } while (matchedPrefix);
