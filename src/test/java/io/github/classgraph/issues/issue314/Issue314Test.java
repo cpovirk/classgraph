@@ -10,7 +10,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Issue314.
  */
-public class Issue314 {
+public class Issue314Test {
     /**
      * The Class A.
      */
@@ -32,11 +32,11 @@ public class Issue314 {
         // the same after the first and second deserialization, because overrideClasspath is set by the first
         // serialization for consistency.)
         final String classfileURL = getClass().getClassLoader()
-                .getResource(Issue314.class.getName().replace('.', '/') + ".class").toString();
+                .getResource(Issue314Test.class.getName().replace('.', '/') + ".class").toString();
         final String classpathBase = classfileURL.substring(0,
-                classfileURL.length() - (Issue314.class.getName().length() + 6));
+                classfileURL.length() - (Issue314Test.class.getName().length() + 6));
         try (ScanResult scanResult1 = new ClassGraph().overrideClasspath(classpathBase)
-                .acceptPackages(Issue314.class.getPackage().getName()).enableAllInfo().scan()) {
+                .acceptPackages(Issue314Test.class.getPackage().getName()).enableAllInfo().scan()) {
             assertThat(scanResult1.getClassInfo(A.class.getName())).isNotNull();
             assertThat(scanResult1.getClassInfo(B.class.getName())).isNotNull();
             final String json1 = scanResult1.toJSON(2);

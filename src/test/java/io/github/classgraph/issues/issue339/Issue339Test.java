@@ -18,7 +18,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Unit test.
  */
-public class Issue339 {
+public class Issue339Test {
     /**
      * Grade.
      */

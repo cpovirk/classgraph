@@ -8,8 +8,8 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import io.github.classgraph.ScanResult;
 
-public class Issue735 {
-    static interface Base<T> {
+public class Issue735Test {
+    interface Base<T> {
         T get();
     }
 
@@ -24,7 +24,7 @@ public class Issue735 {
 
     @Test
     void genericSuperclass() {
-        try (ScanResult scanResult = new ClassGraph().acceptPackages(Issue735.class.getPackage().getName())
+        try (ScanResult scanResult = new ClassGraph().acceptPackages(Issue735Test.class.getPackage().getName())
                 .enableAllInfo().ignoreClassVisibility().ignoreMethodVisibility().scan()) {
             final ClassInfo ci1 = scanResult.getClassInfo(Derived1.class.getName());
             assertThat(ci1.getMethodInfo().get(0).getTypeSignatureOrTypeDescriptor().getResultType().toString())
