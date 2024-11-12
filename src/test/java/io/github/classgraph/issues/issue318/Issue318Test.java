@@ -16,7 +16,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Unit test.
  */
-public class Issue318 {
+public class Issue318Test {
     /**
      * The Interface MyAnn.
      */
@@ -75,7 +75,7 @@ public class Issue318 {
      */
     @Test
     public void issue318() {
-        try (final ScanResult scanResult = new ClassGraph().acceptPackages(Issue318.class.getPackage().getName())
+        try (final ScanResult scanResult = new ClassGraph().acceptPackages(Issue318Test.class.getPackage().getName())
                 .enableAnnotationInfo().enableClassInfo().ignoreClassVisibility() //
                 //.verbose() //
                 .scan()) {

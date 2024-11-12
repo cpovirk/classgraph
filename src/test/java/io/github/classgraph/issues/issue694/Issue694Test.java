@@ -14,7 +14,7 @@ import io.github.classgraph.ClassInfo;
 import io.github.classgraph.MethodInfo;
 import io.github.classgraph.ScanResult;
 
-public class Issue694 {
+public class Issue694Test {
     static class TestClass {
     }
 
@@ -24,7 +24,7 @@ public class Issue694 {
 
     @Test
     void methodWithParam() {
-        final ScanResult scan = new ClassGraph().acceptClasses(Issue694.class.getName()).enableAnnotationInfo()
+        final ScanResult scan = new ClassGraph().acceptClasses(Issue694Test.class.getName()).enableAnnotationInfo()
                 .enableMethodInfo().scan();
 
         final List<String> foundMethods = new ArrayList<>();
@@ -37,8 +37,8 @@ public class Issue694 {
             }
         }
         assertThat(foundMethodInfo).containsOnly(
-                "public static <C extends java.util.Collection<io.github.classgraph.issues.issue694.Issue694$TestClass>> C test(final C collection)");
+                "public static <C extends java.util.Collection<io.github.classgraph.issues.issue694.Issue694Test$TestClass>> C test(final C collection)");
         assertThat(foundMethods).containsOnly(
-                "public static java.util.Collection io.github.classgraph.issues.issue694.Issue694.test(java.util.Collection)");
+                "public static java.util.Collection io.github.classgraph.issues.issue694.Issue694Test.test(java.util.Collection)");
     }
 }

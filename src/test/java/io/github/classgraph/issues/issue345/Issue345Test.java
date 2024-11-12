@@ -15,7 +15,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Issue345.
  */
-public class Issue345 {
+public class Issue345Test {
     /**
      * Superclass.
      */
@@ -81,7 +81,7 @@ public class Issue345 {
     public void testExtensionToOuterClass() {
         try (ScanResult scanResult = new ClassGraph().acceptClasses(Super.class.getName()).ignoreClassVisibility()
                 .scan()) {
-            final ClassInfo outerClassInfo = scanResult.getClassInfo(Issue345.class.getName());
+            final ClassInfo outerClassInfo = scanResult.getClassInfo(Issue345Test.class.getName());
             assertThat(outerClassInfo).isNotNull();
             assertThat(outerClassInfo.getResource()).isNotNull();
         }
@@ -92,7 +92,7 @@ public class Issue345 {
      */
     @Test
     public void testNonExtensionToInnerClass() {
-        try (ScanResult scanResult = new ClassGraph().acceptClasses(Issue345.class.getName())
+        try (ScanResult scanResult = new ClassGraph().acceptClasses(Issue345Test.class.getName())
                 .ignoreClassVisibility().scan()) {
             final ClassInfo innerClassInfo = scanResult.getClassInfo(Super.class.getName());
             assertThat(innerClassInfo).isNotNull();
@@ -107,18 +107,18 @@ public class Issue345 {
      *             the exception
      */
     @Test
-    public void issue345b() throws Exception {
+    public void issue345b() {
         // Find URL of this class' classpath element
         URL classpathURL;
-        try (ScanResult scanResult = new ClassGraph().acceptClasses(Issue345.class.getName()).scan()) {
-            classpathURL = scanResult.getClassInfo(Issue345.class.getName()).getClasspathElementURL();
+        try (ScanResult scanResult = new ClassGraph().acceptClasses(Issue345Test.class.getName()).scan()) {
+            classpathURL = scanResult.getClassInfo(Issue345Test.class.getName()).getClasspathElementURL();
         }
         // Use this to create an override URLClassLoader
         try (ScanResult scanResult = new ClassGraph().enableClassInfo()
                 .overrideClassLoaders(new URLClassLoader(new URL[] { classpathURL })).ignoreParentClassLoaders()
                 .scan()) {
             // Assert that this class is found in its own classloader
-            assertThat(scanResult.getClassInfo(Issue345.class.getName())).isNotNull();
+            assertThat(scanResult.getClassInfo(Issue345Test.class.getName())).isNotNull();
             // But that other classpath elements on the classpath are not found
             assertThat(scanResult.getClassInfo(Test.class.getName())).isNull();
         }
@@ -148,7 +148,7 @@ public class Issue345 {
     @Test
     public void issue345c() {
         try (ScanResult scanResult = new ClassGraph().enableClassInfo()
-                .acceptPackages(Issue345.class.getPackage().getName()).ignoreClassVisibility().scan()) {
+                .acceptPackages(Issue345Test.class.getPackage().getName()).ignoreClassVisibility().scan()) {
             final ClassInfo ciA = scanResult.getClassInfo(A.class.getName());
             assertThat(ciA.getModifiersStr()).isEqualTo("private static");
             final ClassInfo ciB = scanResult.getClassInfo(B.class.getName());

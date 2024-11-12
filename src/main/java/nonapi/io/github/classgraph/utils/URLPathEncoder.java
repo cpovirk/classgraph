@@ -154,8 +154,8 @@ public final class URLPathEncoder {
         // Also accept ':' after a Windows drive letter
         if (VersionFinder.OS == OperatingSystem.Windows) {
             int i = validColonPrefixLen;
-            if (i < path.length() && path.charAt(i) == '/') {
-                i++;
+            if (i < path.length() && path.startsWith("///", i)) {
+                i += "///".length();
             }
             if (i < path.length() - 1 && Character.isLetter(path.charAt(i)) && path.charAt(i + 1) == ':') {
                 validColonPrefixLen = i + 2;
@@ -219,15 +219,19 @@ public final class URLPathEncoder {
             // Any URL containing "!" segments must have "/" after "!" for the "jar:" URL scheme to work
             urlPathNormalized = urlPathNormalized.replace("/!", "!").replace("!/", "!").replace("!", "!/");
 
-            // Prepend "file:/"
+            // Prepend "file:///" to absolute paths and "file:" to relative paths
             if (windowsDrivePrefix.isEmpty()) {
                 // There is no Windows drive
-                urlPathNormalized = urlPathNormalized.startsWith("/") ? "file:" + urlPathNormalized
-                        : "file:/" + urlPathNormalized;
+                if (urlPathNormalized.startsWith("/")) {
+                    // Absolute path: file:///xyz
+                    urlPathNormalized = "file://" + urlPathNormalized;
+                } else {
+                    // Relative path: file:xyz
+                    urlPathNormalized = "file:" + urlPathNormalized;
+                }
             } else {
-                // There is a Windows drive
-                urlPathNormalized = "file:/" + windowsDrivePrefix
-                        + (urlPathNormalized.startsWith("/") ? urlPathNormalized : "/" + urlPathNormalized);
+                // There is a Windows drive, path must be absolute
+                urlPathNormalized = "file:///" + windowsDrivePrefix + urlPathNormalized;
             }
 
             // Prepend "jar:" if path contains a "!" segment

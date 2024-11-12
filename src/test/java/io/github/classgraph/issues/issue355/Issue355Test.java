@@ -20,7 +20,7 @@ import io.github.classgraph.ScanResult;
 /**
  * Unit test.
  */
-public class Issue355 {
+public class Issue355Test {
 
     /**
      * Annotation parameter class.
@@ -67,7 +67,7 @@ public class Issue355 {
     @Test
     public void test() throws IOException {
         try (ScanResult scanResult = new ClassGraph()
-                .acceptPackagesNonRecursive(Issue355.class.getPackage().getName()).enableClassInfo()
+                .acceptPackagesNonRecursive(Issue355Test.class.getPackage().getName()).enableClassInfo()
                 .enableInterClassDependencies().scan()) {
             final ClassInfo y = scanResult.getClassInfo(Y.class.getName());
             final ClassInfo x = scanResult.getClassInfo(X.class.getName());

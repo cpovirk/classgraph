@@ -11,7 +11,7 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.Resource;
 import io.github.classgraph.ScanResult;
 
-public class Issue739 {
+public class Issue739Test {
     @Test
     void wildcardPathSupport() {
         final String relPath = "src/test/resources/";
